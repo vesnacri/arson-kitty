@@ -83,7 +83,7 @@ app.post("/interactions", async function(req, res) {
                             } : null
                         }
                     })
-                } else if (userId == process.env.APP_ID) {
+                } else if (targetId == process.env.APP_ID) {
                     return res.send({
                         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                         data: {
