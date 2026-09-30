@@ -36,12 +36,13 @@ export async function DiscordRequest(endpoint, options) {
     return res;
 }
 
-export async function InstallGlobalCommands() {
-    const endpoint = `applications/${APP_ID}/commands`;
+export async function InstallGlobalCommands(commands) {
+    const endpoint = `applications/${process.env.APP_ID}/commands`;
 
     try {
         // This is calling the bulk overwrite endpoint: https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands
         await DiscordRequest(endpoint, { method: 'PUT', body: commands });
+        console.log("Updated commands");
     } catch (err) {
         console.error(err);
     }
