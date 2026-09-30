@@ -24,7 +24,7 @@ export function GetOptionValue(options, name) {
 export function ParseMsgResponse(template, userId, options) {
     let res = template.replace(/<(\w+)>/g, (match, key) => {
         if (key == "user") {
-            return `<@${user}`;
+            return `<@${userId}`;
         }
         const targetId = GetOptionValue(options, key);
         if (!targetId) return match; // leave unknown placeholders intact
