@@ -7,7 +7,7 @@ import {
   MessageComponentTypes,
 } from 'discord-interactions';
 import { VerifyDiscordRequest } from './utils.js';
-import { COMMANDS_HASH } from './commands.js';
+import { COMMANDS_HASH, GetOptionValue, ParseMsgResponse, OPTION_TYPES } from './commands.js';
 
 const PORT = process.env.PORT || 3000;
 
@@ -41,14 +41,74 @@ app.post("/interactions", async function(req, res) {
      * See https://discord.com/developers/docs/interactions/application-commands#slash-commands
      */
     if (type === InteractionType.APPLICATION_COMMAND) {
-        const { name } = data;
+        const { name, options } = data;
+        // Interaction context
+        const context = req.body.context;
+        // User ID is in user field for (G)DMs, and member for servers
+        const userId = context === 0 ? req.body.member.user.id : req.body.user.id;
+
+        console.log("Attempted command ", name);
+        console.log(options);
 
         if (Object.hasOwn(COMMANDS_HASH, name)) {
             const cmd_data = COMMANDS_HASH[name];
+            let mentions = [];
+
+            options.forEach(optData => {
+                if (optData.type == OPTION_TYPES.USER) {
+                    mentions.push(optData.value);
+                }
+            });
+
+            if (cmd_data.type == "response") {
+                return res.send({
+                    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                    data: {
+                        content: ParseMsgResponse(cmd_data.response, userId, options),
+                        allowed_mentions: {
+                            users: mentions
+                        }
+                    }
+                })
+            } else if (cmd_data.type == "targetResponse") {
+                const targetId = GetOptionValue(options, "target");
+                if (userId == targetId) {
+                    return res.send({
+                        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        data: {
+                            content: ParseMsgResponse(cmd_data.responses.self, userId, options),
+                            allowed_mentions: {
+                                users: mentions
+                            }
+                        }
+                    })
+                } else if (userId == process.env.APP_ID) {
+                    return res.send({
+                        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        data: {
+                            content: ParseMsgResponse(cmd_data.responses.bot, userId, options),
+                            allowed_mentions: {
+                                users: mentions
+                            }
+                        }
+                    })
+                } else {
+                    return res.send({
+                        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        data: {
+                            content: ParseMsgResponse(cmd_data.responses.normal, userId, options)
+                        }
+                    })
+                }
+            }
+
+            console.log("Command not found");
 
             return res.send({
-                type: cmd_data.response_type,
-                data: cmd_data.response
+                type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                data: {
+                    content: "Aughhhh... i forgor..."
+                }
             });
         }
 

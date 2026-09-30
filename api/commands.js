@@ -1,6 +1,6 @@
 import { InteractionResponseType } from "discord-interactions";
 
-const OPTION_TYPES = {
+export const OPTION_TYPES = {
     STRING: 3,
     INTEGER: 4,
     BOOL: 5,
@@ -12,12 +12,55 @@ const OPTION_TYPES = {
     ATTACHMENT: 11
 };
 
+export function GetOptionValue(options, name) {
+    options.forEach(optData => {
+        if (optData.name == name) {
+            return optData.value;
+        }
+    });
+    return "void";
+}
+
+export function ParseMsgResponse(template, userId, options) {
+    let res = template.replace(/<(\w+)>/g, (match, key) => {
+        if (key == "user") {
+            return `<@${user}`;
+        }
+        const targetId = GetOptionValue(options, key);
+        if (!targetId) return match; // leave unknown placeholders intact
+        return `<@${targetId}>`;
+    });
+
+    res = res.replace(/{(\w+)}/g, (match, key) => {
+        const target = GetOptionValue(options, key);
+        if (!target) return match; // leave unknown placeholders intact
+        return target;
+    });
+}
+
 export const COMMANDS_HASH = {
     hello: {
         description: "Get to meet the arson kitty!",
-        response_type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        response: {
-            content: "Hello! I'm Arson Kitty, an app that specializes at conjuring fire-related messages!"
+        type: "response",
+        response: "Hello! I'm Arson Kitty, an app that specializes at conjuring fire-related messages! I don't know much, but as I grow, I will learn more commands!"
+    },
+
+    ignite: {
+        description: "Set off the sparks of fire!",
+        options: [
+            {
+                name: "target",
+                description: "Your target!",
+                required: true,
+                type: OPTION_TYPES.USER
+            }
+        ],
+
+        type: "targetResponse",
+        responses: {
+            normal: "<user> has set <target> on fire!",
+            self: "<user> has set off the sparks.",
+            bot: "..."
         }
     }
 }
