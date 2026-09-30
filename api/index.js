@@ -19,7 +19,7 @@ app.use(express.json({
 }));
 
 app.post("/interactions", async function(req, res) {
-    const isValidRequest = VerifyDiscordRequest(req);
+    const isValidRequest = await VerifyDiscordRequest(req);
     if (!isValidRequest) {
         return res.status(401).end('Bad request signature');
     }
