@@ -48,7 +48,6 @@ app.post("/interactions", async function(req, res) {
         const userId = context === 0 ? req.body.member.user.id : req.body.user.id;
 
         console.log("Attempted command ", name);
-        console.log(options);
 
         if (Object.hasOwn(COMMANDS_HASH, name)) {
             const cmd_data = COMMANDS_HASH[name];
@@ -79,9 +78,9 @@ app.post("/interactions", async function(req, res) {
                         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                         data: {
                             content: ParseMsgResponse(cmd_data.responses.self, userId, options),
-                            allowed_mentions: {
+                            allowed_mentions: options ? {
                                 users: mentions
-                            }
+                            } : null
                         }
                     })
                 } else if (userId == process.env.APP_ID) {
@@ -89,9 +88,9 @@ app.post("/interactions", async function(req, res) {
                         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                         data: {
                             content: ParseMsgResponse(cmd_data.responses.bot, userId, options),
-                            allowed_mentions: {
+                            allowed_mentions: options ? {
                                 users: mentions
-                            }
+                            } : null
                         }
                     })
                 } else {
