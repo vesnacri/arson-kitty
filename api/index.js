@@ -54,11 +54,13 @@ app.post("/interactions", async function(req, res) {
             const cmd_data = COMMANDS_HASH[name];
             let mentions = [];
 
-            options.forEach(optData => {
-                if (optData.type == OPTION_TYPES.USER) {
-                    mentions.push(optData.value);
-                }
-            });
+            if (options) {
+                options.forEach(optData => {
+                    if (optData.type == OPTION_TYPES.USER) {
+                        mentions.push(optData.value);
+                    }
+                });
+            }
 
             if (cmd_data.type == "response") {
                 return res.send({
