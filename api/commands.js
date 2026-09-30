@@ -14,13 +14,14 @@ export const OPTION_TYPES = {
 
 export function GetOptionValue(options, name) {
     console.log("Searching for option ", name);
-    options.forEach(optData => {
+    for (let i = 0; i < options.length; i++) {
         console.log("Checked ", optData.name);
         if (optData.name == name) {
             console.log("Found!")
             return optData.value;
         }
-    });
+    }
+
     console.log("Didn't find ", name);
     return "void";
 }
