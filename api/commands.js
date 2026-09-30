@@ -67,7 +67,7 @@ export const COMMANDS_HASH = {
         type: "targetResponse",
         responses: {
             normal: "<user> has set <target> on fire!",
-            self: "<user> has set off the sparks.",
+            self: "Sparks fly into the air when <user> flicks the lighter.",
             bot: "..."
         }
     }
