@@ -36,6 +36,8 @@ export function ParseMsgResponse(template, userId, options) {
         if (!target) return match; // leave unknown placeholders intact
         return target;
     });
+
+    return res;
 }
 
 export const COMMANDS_HASH = {
