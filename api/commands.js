@@ -13,18 +13,22 @@ export const OPTION_TYPES = {
 };
 
 export function GetOptionValue(options, name) {
+    console.log("Searching for option ", name);
     options.forEach(optData => {
+        console.log("Checked ", optData.name);
         if (optData.name == name) {
+            console.log("Found!")
             return optData.value;
         }
     });
+    console.log("Didn't find ", name);
     return "void";
 }
 
 export function ParseMsgResponse(template, userId, options) {
     let res = template.replace(/<(\w+)>/g, (match, key) => {
         if (key == "user") {
-            return `<@${userId}`;
+            return `<@${userId}>`;
         }
         const targetId = GetOptionValue(options, key);
         if (!targetId) return match; // leave unknown placeholders intact
