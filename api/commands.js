@@ -15,6 +15,7 @@ export const OPTION_TYPES = {
 export function GetOptionValue(options, name) {
     console.log("Searching for option ", name);
     for (let i = 0; i < options.length; i++) {
+        let optData = options[i];
         console.log("Checked ", optData.name);
         if (optData.name == name) {
             console.log("Found!")
