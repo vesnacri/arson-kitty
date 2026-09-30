@@ -53,7 +53,7 @@ app.post("/interactions", async function(req, res) {
                 {
                     type: MessageComponentTypes.TEXT_DISPLAY,
                     // Fetches a random emoji to send from a helper function
-                    content: `hello world`
+                    content: `meow meow :3`
                 }
                 ]
             },
