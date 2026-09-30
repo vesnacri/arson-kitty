@@ -1,20 +1,23 @@
 import { InteractionResponseType } from "discord-interactions";
 
-const CONTEXT_TYPES = {
-    GUILD: 0,
-    BOT_DM: 1,
-    DM: 2
-}
+const OPTION_TYPES = {
+    STRING: 3,
+    INTEGER: 4,
+    BOOL: 5,
+    USER: 6,
+    CHANNEL: 7,
+    ROLE: 8,
+    MENTIONABLE: 9,
+    NUMBER: 10,
+    ATTACHMENT: 11
+};
 
-const DEFAULT_CONTEXT = [CONTEXT_TYPES.GUILD, CONTEXT_TYPES.DM]
-
-export const COMMANDS_LIST = [
-    // Simple test command
-    {
-        name: 'test',
-        description: 'Basic command',
-        type: 1,
-        integration_types: [0, 1],
-        contexts: DEFAULT_CONTEXT,
+export const COMMANDS_HASH = {
+    hello: {
+        description: "Get to meet the arson kitty!",
+        response_type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        response: {
+            content: "Hello! I'm Arson Kitty, an app that specializes at conjuring fire-related messages!"
+        }
     }
-];
+}

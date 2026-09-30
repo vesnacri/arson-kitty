@@ -7,6 +7,7 @@ import {
   MessageComponentTypes,
 } from 'discord-interactions';
 import { VerifyDiscordRequest } from './utils.js';
+import { COMMANDS_HASH } from './commands.js';
 
 const PORT = process.env.PORT || 3000;
 
@@ -42,19 +43,17 @@ app.post("/interactions", async function(req, res) {
     if (type === InteractionType.APPLICATION_COMMAND) {
         const { name } = data;
 
-        // "test" command
-        if (name === 'test') {
-            // Send a message into the channel where command was triggered from
-            return res.send({
-            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-                content: "meow meow!"
-            },
-        });
-    }
+        if (Object.hasOwn(COMMANDS_HASH, name)) {
+            const cmd_data = COMMANDS_HASH[name];
 
-    console.error(`unknown command: ${name}`);
-    return res.status(400).json({ error: 'unknown command' });
+            return res.send({
+                type: cmd_data.response_type,
+                data: cmd_data.response
+            });
+        }
+
+        console.error(`unknown command: ${name}`);
+        return res.status(400).json({ error: 'unknown command' });
     }
 
     console.error('unknown interaction type', type);
