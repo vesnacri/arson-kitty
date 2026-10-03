@@ -101,6 +101,8 @@ app.post("/interactions", async function(req, res) {
                         }
                     })
                 }
+            } else if (cmd_data.type == "unique") {
+                return cmd_data.response(req, res);
             }
 
             console.log("Command not found");
